@@ -48,10 +48,15 @@ class IndexController extends HttpController
             $id = md5(uniqid('', true));
         }
         $fileName = Imi::getRuntimePath('openai/' . md5($id) . '.txt');
-        $fp = fopen($fileName, 'a+');
-        fseek($fp, 0, \SEEK_SET);
-        $content = stream_get_contents($fp);
-        $opts = json_decode($content, true);
+        if (is_file($fileName))
+        {
+            $content = file_get_contents($fileName);
+            $opts = json_decode($content, true);
+        }
+        else
+        {
+            $opts = null;
+        }
         if (!$opts)
         {
             $opts = [
@@ -72,7 +77,6 @@ class IndexController extends HttpController
             'role'    => 'user',
             'content' => $message,
         ];
-        fwrite($fp, json_encode($opts, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE));
 
         $openAI = new OpenAi(Config::get('@app.openai.api_key'));
         if ($proxy = Config::get('@app.openai.proxy'))
@@ -84,6 +88,7 @@ class IndexController extends HttpController
         $response->header('Content-Type', 'text/event-stream');
         $response->header('Cache-Control', 'no-cache');
         $replyContent = '';
+        var_dump($opts);
         $openAI->chat($opts, function ($curl_info, $data) use ($response, $id, &$replyContent) {
             var_dump($data);
             $datas = explode(\PHP_EOL, $data);
@@ -123,8 +128,7 @@ class IndexController extends HttpController
             'role'    => 'assistant',
             'content' => $replyContent,
         ];
-        fwrite($fp, json_encode($opts, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE));
-        fclose($fp);
+        file_put_contents($fileName, json_encode($opts, \JSON_PRETTY_PRINT | \JSON_UNESCAPED_UNICODE));
         $response->end();
     }
 }
