@@ -91,10 +91,10 @@ class IndexController extends HttpController
         var_dump($opts);
         $openAI->chat($opts, function ($curl_info, $data) use ($response, $id, &$replyContent) {
             var_dump($data);
-            $datas = explode(\PHP_EOL, $data);
-            foreach ($datas as $tmpData)
+            $datas = explode('data: ', $data);
+            var_dump($datas);
+            foreach ($datas as $dataStr)
             {
-                $dataStr = substr($tmpData, 6);
                 $arrayData = json_decode($dataStr, true);
                 if ($arrayData)
                 {
