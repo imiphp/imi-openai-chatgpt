@@ -1,13 +1,11 @@
 {
-    "name": "imiphp/project-http",
+    "name": "imiphp/openai-chatgpt",
     "type": "project",
-    "description": "imi 框架的 Http Server 项目。https://imiphp.com",
+    "description": "这是一个在 imi 框架接入 OpenAI ChatGPT 的 Demo 项目。https://imiphp.com",
     "require": {
         "php": ">=7.4",
         "imiphp/imi": "~2.1.0",
-        "imiphp/imi-fpm": "~2.1.0",
         "imiphp/imi-swoole": "~2.1.0",
-        "imiphp/imi-workerman": "~2.1.0",
         "orhanerday/open-ai": "^4.7"
     },
     "require-dev": {

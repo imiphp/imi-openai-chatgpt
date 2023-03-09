@@ -16,7 +16,7 @@ OpenAI：<https://platform.openai.com/>
 
 ## 安装
 
-创建项目：`composer create-project imiphp/imi-openai-chatgpt:~2.1.0`
+创建项目：`composer create-project imiphp/openai-chatgpt`
 
 ## 配置
 
@@ -27,6 +27,8 @@ OpenAI：<https://platform.openai.com/>
 ## 访问测试
 
 <http://127.0.0.1:8080/>
+
+代码实现：<Module/Test/ApiController/IndexController.php>
 
 ## 生产环境
 
