@@ -28,7 +28,9 @@ OpenAI：<https://platform.openai.com/>
 
 <http://127.0.0.1:8080/>
 
-代码实现：<Module/Test/ApiController/IndexController.php>
+控制器：`Module/Test/ApiController/IndexController.php`
+
+页面模版：`Module/Test/template/index/index.html`
 
 ## 生产环境
 

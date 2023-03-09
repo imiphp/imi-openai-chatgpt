@@ -86,29 +86,33 @@ class IndexController extends HttpController
         $replyContent = '';
         $openAI->chat($opts, function ($curl_info, $data) use ($response, $id, &$replyContent) {
             var_dump($data);
-            $dataStr = substr($data, 6);
-            $arrayData = json_decode($dataStr, true);
-            if ($arrayData)
+            $datas = explode(\PHP_EOL, $data);
+            foreach ($datas as $tmpData)
             {
-                if (isset($arrayData['choices'][0]['delta']['content']))
+                $dataStr = substr($tmpData, 6);
+                $arrayData = json_decode($dataStr, true);
+                if ($arrayData)
                 {
-                    $replyContent .= ($content = $arrayData['choices'][0]['delta']['content'] ?? '');
-                    if (!$response->write('data: ' . json_encode([
-                        'id'      => $id,
-                        'content' => $content,
-                    ]) . \PHP_EOL . \PHP_EOL))
+                    if (isset($arrayData['choices'][0]['delta']['content']))
                     {
-                        return 0;
+                        $replyContent .= ($content = $arrayData['choices'][0]['delta']['content'] ?? '');
+                        if (!$response->write('data: ' . json_encode([
+                            'id'      => $id,
+                            'content' => $content,
+                        ]) . \PHP_EOL . \PHP_EOL))
+                        {
+                            return 0;
+                        }
                     }
-                }
-                elseif (!empty($arrayData['choices'][0]['finish_reason']))
-                {
-                    if (!$response->write('data: ' . json_encode([
-                        'id'      => $id,
-                        'content' => null,
-                    ]) . \PHP_EOL . \PHP_EOL))
+                    elseif (!empty($arrayData['choices'][0]['finish_reason']))
                     {
-                        return 0;
+                        if (!$response->write('data: ' . json_encode([
+                            'id'      => $id,
+                            'content' => null,
+                        ]) . \PHP_EOL . \PHP_EOL))
+                        {
+                            return 0;
+                        }
                     }
                 }
             }
