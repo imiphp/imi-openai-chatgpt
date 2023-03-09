@@ -1,0 +1,72 @@
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>imi chatGPT</title>
+</head>
+
+<body>
+    <div id="divID" style="background-color: beige;line-height: 1.625rem;">
+        请输入内容开始对话！<br />
+    </div>
+    <div>
+        设定AI：<input type="text" id="systemContent" value="你是一个大聪明" />
+    </div>
+    <textarea id="message" style="width: 100%;height:6em"></textarea>
+    <div style="text-align: center;margin-top: 1em;"><button id="send" style="padding:1em 2em">发送</button></div>
+    <script>
+        var waiting = false;
+        var id = '';
+        var send = document.getElementById('send');
+
+        document.onkeydown = function (e) {
+            var ev = document.all ? window.event : e;
+            if (ev.keyCode == 13) {
+                ev.preventDefault();
+                send.click();
+            }
+        };
+
+        send.onclick = function () {
+            if (waiting) {
+                return;
+            }
+            var div = document.getElementById('divID');
+            var message = document.getElementById('message');
+            waiting = true;
+            div.innerText += "你: " + message.value + "\n";
+            div.innerText += "机器人: ";
+            var url = "/chatGPT?message=" + message.value + "&id=" + id;
+            if (id.length == 0) {
+                url += "&systemContent=" + document.getElementById('systemContent').value;
+            }
+            var eventSource = new EventSource(url);
+            message.value = "";
+
+            eventSource.onmessage = function (e) {
+                var data = JSON.parse(e.data);
+                console.log(data);
+                id = data.id;
+                var div = document.getElementById('divID');
+                if (null !== data.content) {
+                    if ("\n\n" !== data.content) {
+                        div.innerText += data.content;
+                    }
+                }
+                else {
+                    div.innerText += "[结束]\n";
+                }
+            };
+
+            eventSource.onerror = function (e) {
+                waiting = false;
+                console.log(e);
+                eventSource.close();
+            };
+        };
+    </script>
+</body>
+
+</html>

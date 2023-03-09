@@ -1,0 +1,21 @@
+parameters:
+    level: 6
+
+    phpVersion: 80000
+
+    paths:
+        - .
+
+    excludePaths:
+        - */vendor/*
+
+    bootstrapFiles:
+        - vendor/autoload.php
+
+    treatPhpDocTypesAsCertain: false
+    checkGenericClassInNonGenericObjectType: false
+    checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
+
+    ignoreErrors:
+        - '#expects class-string<\S+>, string given#'
