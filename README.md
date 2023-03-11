@@ -24,6 +24,10 @@ OpenAI：<https://platform.openai.com/>
 
 修改 `.env` 配置即可。
 
+## 运行
+
+`vendor/bin/imi-swoole swoole/start`
+
 ## 访问测试
 
 <http://127.0.0.1:8080/>
